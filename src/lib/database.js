@@ -1,29 +1,26 @@
-const { MongoClient } = require("mongodb");
+import mongoose from "mongoose";
 
-// Replace the uri string with your connection string
-const uri = process.env.MONGO_DB_URL;
+const MONGODB_URI = process.env.MONGODB_URI; // Add this to your environment variables
 
-if (!uri) {
-    console.log('there is no MONGO_DB_URi');
-    
+let cached = global.mongoose;
+console.log(MONGODB_URI);
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
 }
 
-const client = new MongoClient(uri);
-
-console.log('mongodb is connected successfull',client);
-
-async function run() {
-  try {
-    const database = client.db('sample_mflix');
-    const movies = database.collection('movies');
-
-    // Queries for a movie that has a title value of 'Back to the Future'
-    const query = { title: 'Back to the Future' };
-    const movie = await movies.findOne(query);
-
-    console.log(movie);
-  } finally {
-    await client.close();
+export async function connectToDatabase() {
+  if (cached.conn) {
+    return cached.conn;
   }
+
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }).then((mongoose) => mongoose);
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
-run().catch(console.dir);
