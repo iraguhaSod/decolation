@@ -2,10 +2,15 @@
 
 import { UploadButton } from "../../lib/uploadthing";
 import { AddItem } from "../../lib/actions/addItem";
-import React from "react";
+import React, { useState } from "react";
 
-const handleAddItem = async (e) => {
+
+const page = () => {
   const [photoUrl, setPhotoUrl] = useState('')
+
+  
+const handleAddItem = async (e) => {
+  
   e.preventDefault();
   if (photoUrl === '') {
     return alert('Please upload a photo')
@@ -23,8 +28,6 @@ const handleAddItem = async (e) => {
   const response = await AddItem(itemData);
   console.log(response);
 };
-
-const page = () => {
   return (
     <div className="py-10 w-full max-w-xl space-y-4 mx-auto">
       <h1 className="text-3xl text-center ">Add item</h1>

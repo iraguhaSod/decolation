@@ -16,11 +16,12 @@ export async function connectToDatabase() {
 
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }).then((mongoose) => mongoose);
+     //  useNewUrlParser: true,
+       //useUnifiedTopology: true,
+      
+    },mongoose.set('strictQuery', false)).then((mongoose) => mongoose);
   }
 
-  cached.conn = await cached.promise;
+    cached.conn = await cached.promise;
   return cached.conn;
 }
